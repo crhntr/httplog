@@ -10,9 +10,9 @@ import (
 func JSON(outLogger, errLogger *log.Logger) func(req *http.Request, elapsed time.Duration, status int) {
 	return func(req *http.Request, elapsed time.Duration, status int) {
 		if status >= 500 {
-			errLogger.Printf(`{"type": "HTTP_REQUEST", "method": %q, "path": %q, "duration": %q, "status": %d}`+"\n", req.Method, req.URL.Path, elapsed, status)
+			errLogger.Printf(`{"method": %q, "path": %q, "duration": %q, "status": %d}`+"\n", req.Method, req.URL.Path, elapsed, status)
 		}
-		outLogger.Printf(`{"type": "HTTP_REQUEST", "method": %q, "path": %q, "duration": %q, "status": %d}`+"\n", req.Method, req.URL.Path, elapsed, status)
+		outLogger.Printf(`{"method": %q, "path": %q, "duration": %q, "status": %d}`+"\n", req.Method, req.URL.Path, elapsed, status)
 	}
 }
 
