@@ -1,5 +1,5 @@
 # httplog
-`httplog` is an http request logger to wraph your http.Handler.
+`httplog` is an http request logger to wrap your http.Handler.
 
 [![GoDoc](https://godoc.org/github.com/crhntr/httplog?status.svg)](https://godoc.org/github.com/crhntr/httplog)
 
