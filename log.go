@@ -7,6 +7,8 @@ import (
 	"time"
 )
 
+//bzzzzz
+
 func JSON(outLogger, errLogger *log.Logger) func(req *http.Request, elapsed time.Duration, status int) {
 	return func(req *http.Request, elapsed time.Duration, status int) {
 		if status >= 500 {
