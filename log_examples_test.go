@@ -22,7 +22,7 @@ func ExampleWrap() {
 	r := httptest.NewRequest(http.MethodGet, "/", nil)
 	logMux.ServeHTTP(w, r)
 }
-
+// another pull request
 func TestWrap(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
