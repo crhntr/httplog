@@ -17,3 +17,5 @@ logMux.ServeHTTP(w, r)
 // Output:
 // {"type": "HTTP_REQUEST", "method": "GET", "path": "/greeting", "duration": "48.572µs", "status": 200}
 ```
+
+Update the readme
