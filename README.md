@@ -1,4 +1,7 @@
 # httplog
+
+**This was initially pulled out of a side project then we used the repo as an acceptance test stub at Pivotal/VMware (note the silly commits)**
+
 `httplog` is a http request logger to wrap your http.Handler.
 
 [![GoDoc](https://godoc.org/github.com/crhntr/httplog?status.svg)](https://godoc.org/github.com/crhntr/httplog)
