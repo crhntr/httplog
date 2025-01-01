@@ -1,7 +1,7 @@
 package httplog_test
 
 import (
-	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,7 +13,7 @@ func ExampleWrap() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "Hello, world!")
+		_, _ = io.WriteString(w, "Hello, world!")
 	})
 
 	logMux := httplog.Wrap(mux)
@@ -27,7 +27,7 @@ func TestWrap(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, "Hello, world!")
+		_, _ = io.WriteString(w, "Hello, world!")
 	})
 
 	logMux := httplog.Wrap(mux)
