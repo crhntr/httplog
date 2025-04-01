@@ -1,10 +1,13 @@
 package httplog
 
 import (
+	"cmp"
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -17,13 +20,42 @@ func JSON(outLogger, errLogger *log.Logger) func(req *http.Request, elapsed time
 	}
 }
 
-func Structured(logger *slog.Logger, level slog.Level) func(req *http.Request, elapsed time.Duration, status int) {
+func Structured(logger *slog.Logger) func(req *http.Request, elapsed time.Duration, status int) {
+	level := ParseStructuredLogLevel("", slog.LevelInfo)
 	return func(req *http.Request, elapsed time.Duration, status int) {
 		if status >= 500 {
 			logger.ErrorContext(req.Context(), "request error", slog.String("method", req.Method), slog.String("path", req.URL.Path), slog.Int("status", status), slog.Duration("duration", elapsed))
 			return
 		}
 		logger.Log(req.Context(), level, "request", slog.String("method", req.Method), slog.String("path", req.URL.Path), slog.Int("status", status), slog.Duration("duration", elapsed))
+	}
+}
+
+const DefaultStructuredLevelEnvironmentVariableName = "HTTP_LOG_LEVEL"
+
+func ParseStructuredLogLevel(varName string, defaultLevel slog.Level) slog.Level {
+	env := cmp.Or(varName, DefaultStructuredLevelEnvironmentVariableName)
+	val, ok := os.LookupEnv(env)
+	if !ok {
+		return defaultLevel
+	}
+	switch val {
+	case slog.LevelDebug.String():
+		return slog.LevelDebug
+	case slog.LevelInfo.String():
+		return slog.LevelInfo
+	case slog.LevelWarn.String():
+		return slog.LevelWarn
+	case slog.LevelError.String():
+		return slog.LevelError
+	default:
+		if n, err := strconv.ParseInt(val, 10, 64); err != nil {
+			_, _ = fmt.Fprintf(os.Stderr, "httplog: invalid integer value for %s: %s\n", env, val)
+			os.Exit(1)
+			return 0
+		} else {
+			return slog.Level(n)
+		}
 	}
 }
 
