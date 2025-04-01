@@ -24,6 +24,10 @@ type logRecord struct {
 	status int
 }
 
+func (r *logRecord) Unwrap() http.ResponseWriter {
+	return r.ResponseWriter
+}
+
 func (r *logRecord) Write(p []byte) (int, error) {
 	return r.ResponseWriter.Write(p)
 }
