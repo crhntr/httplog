@@ -2,6 +2,7 @@ package httplog
 
 import (
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"time"
@@ -13,6 +14,16 @@ func JSON(outLogger, errLogger *log.Logger) func(req *http.Request, elapsed time
 			errLogger.Printf(`{"type": "HTTP_REQUEST", "method": %q, "path": %q, "duration": %q, "status": %d}`+"\n", req.Method, req.URL.Path, elapsed, status)
 		}
 		outLogger.Printf(`{"type": "HTTP_REQUEST", "method": %q, "path": %q, "duration": %q, "status": %d}`+"\n", req.Method, req.URL.Path, elapsed, status)
+	}
+}
+
+func Structured(logger *slog.Logger, level slog.Level) func(req *http.Request, elapsed time.Duration, status int) {
+	return func(req *http.Request, elapsed time.Duration, status int) {
+		if status >= 500 {
+			logger.ErrorContext(req.Context(), "request error", slog.String("method", req.Method), slog.String("path", req.URL.Path), slog.Int("status", status), slog.Duration("duration", elapsed))
+			return
+		}
+		logger.Log(req.Context(), level, "request", slog.String("method", req.Method), slog.String("path", req.URL.Path), slog.Int("status", status), slog.Duration("duration", elapsed))
 	}
 }
 
